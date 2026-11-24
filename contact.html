@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>문의하기 | Engagement Test Site</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/config.js"></script>
+<script src="assets/tracking.js" defer></script>
+</head>
+<body data-page="contact">
+<header><nav><strong>Engagement Test Site</strong><a href="index.html">홈</a><a href="product.html">제품</a><a href="contact.html">문의하기</a></nav></header>
+<main>
+<h1>문의하기</h1>
+<p>테스트용 문의 폼입니다. 실제 개인정보를 입력하지 마십시오.</p>
+<form id="contact-form" method="POST">
+<input type="hidden" name="oid" id="oid">
+<input type="hidden" name="retURL" id="retURL">
+<label for="last_name">성</label><input id="last_name" name="last_name" required>
+<label for="first_name">이름</label><input id="first_name" name="first_name" required>
+<label for="company">회사</label><input id="company" name="company" required>
+<label for="email">이메일</label><input id="email" name="email" type="email" required>
+<label for="description">문의 내용</label><textarea id="description" name="description" rows="4"></textarea>
+<p><button class="btn" type="submit">제출</button></p>
+</form>
+<script>
+(function () {
+  var cfg = window.TEST_CONFIG || {}, form = document.getElementById("contact-form");
+  var thanks = new URL("thank-you.html", location.href).href;
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var p = { email: form.email.value.trim(), firstName: form.first_name.value.trim(), lastName: form.last_name.value.trim() };
+    var go = function () {
+      if (cfg.webToLeadOrgId) {
+        form.oid.value = cfg.webToLeadOrgId; form.retURL.value = thanks;
+        form.action = cfg.webToLeadHost + "/servlet/servlet.WebToLead?encoding=UTF-8";
+        form.submit();
+      } else { location.href = thanks; }
+    };
+    var t = setTimeout(go, 1500);
+    (window.TestTracking ? window.TestTracking.identify(p) : Promise.resolve()).then(function () { clearTimeout(t); setTimeout(go, 400); }, function () { clearTimeout(t); go(); });
+  });
+})();
+</script>
+<div class="note">추적 로그 (테스트용)<pre id="track-log"></pre></div>
+</main>
+</body></html>
