@@ -12,9 +12,7 @@
 <main>
 <h1>문의하기</h1>
 <p>테스트용 문의 폼입니다. 실제 개인정보를 입력하지 마십시오.</p>
-<form id="contact-form" method="POST">
-<input type="hidden" name="oid" id="oid">
-<input type="hidden" name="retURL" id="retURL">
+<form id="contact-form">
 <label for="last_name">성</label><input id="last_name" name="last_name" required>
 <label for="first_name">이름</label><input id="first_name" name="first_name" required>
 <label for="company">회사</label><input id="company" name="company" required>
@@ -24,20 +22,14 @@
 </form>
 <script>
 (function () {
-  var cfg = window.TEST_CONFIG || {}, form = document.getElementById("contact-form");
+  var form = document.getElementById("contact-form");
   var thanks = new URL("thank-you.html", location.href).href;
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var p = { email: form.email.value.trim(), firstName: form.first_name.value.trim(), lastName: form.last_name.value.trim() };
-    var go = function () {
-      if (cfg.webToLeadOrgId) {
-        form.oid.value = cfg.webToLeadOrgId; form.retURL.value = thanks;
-        form.action = cfg.webToLeadHost + "/servlet/servlet.WebToLead?encoding=UTF-8";
-        form.submit();
-      } else { location.href = thanks; }
-    };
-    var t = setTimeout(go, 1500);
-    (window.TestTracking ? window.TestTracking.identify(p) : Promise.resolve()).then(function () { clearTimeout(t); setTimeout(go, 400); }, function () { clearTimeout(t); go(); });
+    var go = function () { location.href = thanks; };
+    var t = setTimeout(go, 4000);
+    window.TestTracking.identify(p).then(function () { clearTimeout(t); go(); }, function () { clearTimeout(t); go(); });
   });
 })();
 </script>

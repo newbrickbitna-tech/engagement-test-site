@@ -1,9 +1,5 @@
-// 테스트 설정. Sandbox에서 Website 커넥터를 만든 뒤 값을 채웁니다.
+// 테스트 설정
 window.TEST_CONFIG = {
-  // Data Cloud Setup > Websites & Mobile Apps > 커넥터의 Content Delivery Network (CDN) script URL
-  sdkUrl: '',
-  // Web-to-Lead를 받을 org의 Id (비워 두면 폼은 Salesforce로 전송하지 않고 화면 이동만 합니다)
-  webToLeadOrgId: '',
-  // Sandbox는 test.salesforce.com, 운영은 webto.salesforce.com
-  webToLeadHost: 'https://test.salesforce.com'
+  // Data Cloud Website 커넥터의 CDN 스크립트 URL
+  sdkUrl: 'https://cdn.c360a.salesforce.com/beacon/c360a/7caae897-7a0b-449c-a68e-7fee5cebe6a3/scripts/c360a.min.js'
 };
