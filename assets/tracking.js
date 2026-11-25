@@ -42,19 +42,6 @@
       log('page view 전송:', { page: page, utmContent: current.utmContent, deviceId: SI.getAnonymousId && SI.getAnonymousId() });
     }).catch(function (e) { log('SDK 초기화 실패: ' + e); });
 
-    // 버튼·링크 클릭 추적: <a>, <button>, .btn 요소를 누르면 click 이벤트 전송
-    document.addEventListener('click', function (e) {
-      var el = e.target.closest && e.target.closest('a, button, .btn');
-      if (!el) return;
-      var isLink = el.tagName === 'A';
-      var label = (el.getAttribute('data-track-label') || el.innerText || el.value || '').trim().slice(0, 80);
-      var data = { name: isLink ? 'link-click' : 'button-click', eventType: 'click',
-                   elementType: isLink ? 'link' : 'button', elementId: el.id || '', elementLabel: label,
-                   linkHref: isLink ? el.href : '', pageUrl: location.href, pageName: page };
-      SI.sendEvent({ interaction: Object.assign(data, current) });
-      log((isLink ? 'link' : 'button') + ' click 전송:', { label: label, href: data.linkHref });
-    }, true);
-
     window.TestTracking.identify = function (p) {
       log('form-submit + identity + contactPointEmail 전송:', { email: p.email });
       SI.sendEvent({ interaction: Object.assign({ name: 'form-submit', eventType: 'formSubmit',
