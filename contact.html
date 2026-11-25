@@ -11,8 +11,22 @@
 <header><nav><strong>Engagement Test Site</strong><a href="index.html">홈</a><a href="product.html">제품</a><a href="contact.html">문의하기</a></nav></header>
 <main>
 <h1>문의하기</h1>
-<p>테스트용 문의 폼입니다. 실제 개인정보를 입력하지 마십시오.</p>
-<form id="contact-form">
+<p>테스트용 문의 폼입니다. 제출하면 테스트 org에 Lead가 생성됩니다. 실제 개인정보를 입력하지 마십시오.</p>
+<iframe name="w2l_target" id="w2l_target" style="display:none"></iframe>
+<form id="contact-form" method="POST" target="w2l_target"
+      action="https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00DJP000001yNUD">
+<input type="hidden" name="oid" value="00DJP000001yNUD">
+<!-- UTM hidden 필드: 최초(first) 5개 + 최근(last) 5개 -->
+<input type="hidden" name="00NJP000001LE4F" data-utm="utmSource">
+<input type="hidden" name="00NJP000001Iv6A" data-utm="utmSource">
+<input type="hidden" name="00NJP000001LHi1" data-utm="utmMedium">
+<input type="hidden" name="00NJP000001Iv68" data-utm="utmMedium">
+<input type="hidden" name="00NJP000001Iv65" data-utm="utmCampaign">
+<input type="hidden" name="00NJP000001Iv64" data-utm="utmCampaign">
+<input type="hidden" name="00NJP000001LHjd" data-utm="utmContent">
+<input type="hidden" name="00NJP000001Iv66" data-utm="utmContent">
+<input type="hidden" name="00NJP000001Iv6D" data-utm="utmTerm">
+<input type="hidden" name="00NJP000001Iv6C" data-utm="utmTerm">
 <label for="last_name">성</label><input id="last_name" name="last_name" required>
 <label for="first_name">이름</label><input id="first_name" name="first_name" required>
 <label for="company">회사</label><input id="company" name="company" required>
@@ -24,12 +38,20 @@
 (function () {
   var form = document.getElementById("contact-form");
   var thanks = new URL("thank-you.html", location.href).href;
+  var sent = false;
   form.addEventListener("submit", function (e) {
+    if (sent) return;              // 두 번째 submit은 그대로 Salesforce로 전송
     e.preventDefault();
+    var u = (window.TestTracking && window.TestTracking.utm) || {};
+    form.querySelectorAll("input[data-utm]").forEach(function (el) { el.value = u[el.getAttribute("data-utm")] || ""; });
     var p = { email: form.email.value.trim(), firstName: form.first_name.value.trim(), lastName: form.last_name.value.trim() };
-    var go = function () { location.href = thanks; };
-    var t = setTimeout(go, 4000);
-    window.TestTracking.identify(p).then(function () { clearTimeout(t); go(); }, function () { clearTimeout(t); go(); });
+    var finish = function () {
+      if (sent) return; sent = true;
+      form.submit();                                   // Web-to-Lead (숨은 iframe으로 전송)
+      setTimeout(function () { location.href = thanks; }, 2500);
+    };
+    var t = setTimeout(finish, 4000);
+    window.TestTracking.identify(p).then(function () { clearTimeout(t); finish(); }, function () { clearTimeout(t); finish(); });
   });
 })();
 </script>
