@@ -16,16 +16,16 @@
 <form id="contact-form" method="POST" target="w2l_target"
       action="https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00DJP000001yNUD">
 <input type="hidden" name="oid" value="00DJP000001yNUD">
-<!-- UTM hidden 필드: 최초(first) 5개 + 최근(last) 5개 -->
-<input type="hidden" name="00NJP000001LE4F" data-utm="utmSource">
+<!-- UTM hidden 필드: 최초(first, utm_*) 5개는 firstUtm*, 최근(last, utm_*_last) 5개는 utm* 값 -->
+<input type="hidden" name="00NJP000001LE4F" data-utm="firstUtmSource">
 <input type="hidden" name="00NJP000001Iv6A" data-utm="utmSource">
-<input type="hidden" name="00NJP000001LHi1" data-utm="utmMedium">
+<input type="hidden" name="00NJP000001LHi1" data-utm="firstUtmMedium">
 <input type="hidden" name="00NJP000001Iv68" data-utm="utmMedium">
-<input type="hidden" name="00NJP000001Iv65" data-utm="utmCampaign">
+<input type="hidden" name="00NJP000001Iv65" data-utm="firstUtmCampaign">
 <input type="hidden" name="00NJP000001Iv64" data-utm="utmCampaign">
-<input type="hidden" name="00NJP000001LHjd" data-utm="utmContent">
+<input type="hidden" name="00NJP000001LHjd" data-utm="firstUtmContent">
 <input type="hidden" name="00NJP000001Iv66" data-utm="utmContent">
-<input type="hidden" name="00NJP000001Iv6D" data-utm="utmTerm">
+<input type="hidden" name="00NJP000001Iv6D" data-utm="firstUtmTerm">
 <input type="hidden" name="00NJP000001Iv6C" data-utm="utmTerm">
 <label for="last_name">성</label><input id="last_name" name="last_name" required>
 <label for="first_name">이름</label><input id="first_name" name="first_name" required>
