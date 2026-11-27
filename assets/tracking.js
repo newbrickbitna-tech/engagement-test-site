@@ -1,17 +1,18 @@
 // Data Cloud Web SDK(Salesforce Interactions SDK) 연동 테스트용 스크립트.
-// page view·form submit마다 최초 UTM 5개(utm_*)와 최근 UTM 5개(utm_*_last)를 함께 보내고, 폼 제출 시 이메일을 identity로 보내 방문 기록을 사람과 연결합니다.
+// page view·form submit마다 최초 UTM 5개(utmSource 등)와 최근 UTM 5개(utmSourceLast 등)를 함께 보내고, 폼 제출 시 이메일을 identity로 보내 방문 기록을 사람과 연결합니다.
 (function () {
   var cfg = window.TEST_CONFIG || {};
   var KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+  var NAMES = ['Source', 'Medium', 'Campaign', 'Content', 'Term'];
   var log = function (msg, data) {
     var el = document.getElementById('track-log');
     if (el) el.textContent += '[' + new Date().toLocaleTimeString() + '] ' + msg + (data ? ' ' + JSON.stringify(data) : '') + '\n';
   };
 
   // 홈페이지 lead-attribution.js와 같은 저장 구조(mr:lead-utm = { first: {expiresAt, values}, last: {expiresAt, values} })를 읽음
-  // Lead 필드와 같은 이름으로 전송
-  // - utm_source 등 5개      : 최초 유입(first) 값 (없으면 URL 값)
-  // - utm_source_last 등 5개 : URL에 UTM이 있으면 URL 값, 없으면 최근 유입(last) 값
+  // Lead 필드 규칙과 같게 전송: 접미어 없음 = 최초, Last = 최근 (Salesforce에서 utm_source__c·utm_source_last__c 등에 저장)
+  // - utmSource 등 5개     : 최초 유입(first) 값 (없으면 URL 값)
+  // - utmSourceLast 등 5개 : URL에 UTM이 있으면 URL 값, 없으면 최근 유입(last) 값
   function utm() {
     var params = new URLSearchParams(location.search), first = {}, last = {};
     try {
@@ -23,9 +24,9 @@
     var fromUrl = KEYS.some(function (k) { return params.has(k); });
     var hasFirst = KEYS.some(function (k) { return first[k]; });
     var out = {};
-    KEYS.forEach(function (k) {
-      out[k] = (hasFirst ? first[k] : (fromUrl ? params.get(k) : '')) || '';
-      out[k + '_last'] = (fromUrl ? params.get(k) : last[k]) || '';
+    KEYS.forEach(function (k, i) {
+      out['utm' + NAMES[i]] = (hasFirst ? first[k] : (fromUrl ? params.get(k) : '')) || '';
+      out['utm' + NAMES[i] + 'Last'] = (fromUrl ? params.get(k) : last[k]) || '';
     });
     return out;
   }
